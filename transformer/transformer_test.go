@@ -7,9 +7,9 @@ import (
 	"fmt"
 )
 
-func TestSomething(t *testing.T){
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
-		fmt.Fprintf(w, `{"foo": 69, "bar": 96}`)
+func TestSomething(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, `{"foo": 69, "bar": {"pub": 96}}`)
 	}))
 
 	defer server.Close()
