@@ -5,6 +5,8 @@ import (
 	"log"
 	"encoding/json"
 	"github.com/astaxie/flatmap"
+	"strings"
+	"fmt"
 )
 
 type Transformer struct {
@@ -15,22 +17,33 @@ type Transformer struct {
 //TODO tags sendes inn!
 
 func (t *Transformer) transform(url string) string {
-	jsonData := asJson(performRequest(t.Request))
-
-	jsonData2, err := flatmap.Flatten(jsonData)
+	request := performRequest(t.Request)
+	json, err := flatmap.Flatten(asJson(request))
 
 	if (err != nil) {
 		panic(err)
 	}
 
-	var output string
+	tags := createTagString(t.Tags)
+	// timestamp := getNanoTimestamp
 
-	for key, value := range jsonData2 {
-		log.Println(key, value)
-		output += string(key) + ":" + string(value)
+	var lines []string
+	for key, value := range json {
+		line := string(key) + " " + tags + " " + "value=" + string(value)
+		lines = append(lines, line)
 	}
 
-	return output
+	result := strings.Join(lines, "\n")
+	fmt.Println(result)
+	return result
+}
+
+func createTagString(tags map[string]string) string {
+	var tagString string
+	for key, value := range tags {
+		tagString += string(key) + "=" + string(value) + ","
+	}
+	return tagString[:len(tagString) - 1]
 }
 
 func performRequest(req *http.Request) *http.Response {
