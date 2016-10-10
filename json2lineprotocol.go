@@ -8,6 +8,7 @@ import (
 	"strings"
 	"log"
 	"io/ioutil"
+	t "github.com/jhrv/json2lineprotocol/transformer"
 )
 
 var (
@@ -38,7 +39,7 @@ func main() {
 
 	req, _ := http.NewRequest("GET", *endpoint, nil)
 
-	transformer := Transformer{req, mapifyTagString(*tags)}
+	transformer := t.Transformer{req, mapifyTagString(*tags)}
 	output := transformer.Transform()
 	fmt.Println(output)
 }
