@@ -8,7 +8,7 @@ import (
 	"strings"
 	"log"
 	"io/ioutil"
-	t "./transformer"
+	t "github.com/jhrv/json2lineprotocol/transformer"
 )
 
 var (
