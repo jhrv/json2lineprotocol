@@ -13,7 +13,7 @@ import (
 
 var (
 	endpoint = flag.String("endpoint", "", "")
-	tags = flag.String("tags", "", "")
+	tagString = flag.String("tags", "", "")
 	debug = flag.Bool("debug", false, "")
 )
 
@@ -33,18 +33,28 @@ func main() {
 		fmt.Fprint(os.Stderr, usage)
 	}
 
+	if *endpoint == "" {
+		flag.Usage()
+		fmt.Fprintf(os.Stderr, "\n")
+		os.Exit(1)
+	}
+
 	if !*debug {
 		log.SetOutput(ioutil.Discard)
 	}
 
 	req, _ := http.NewRequest("GET", *endpoint, nil)
 
-	transformer := t.Transformer{req, mapifyTagString(*tags)}
+	transformer := t.Transformer{req, mapifyTagString(*tagString)}
 	output := transformer.Transform()
 	fmt.Println(output)
 }
 
 func mapifyTagString(tagString string) map[string]string {
+	if tagString == "" {
+		return nil
+	}
+
 	tags := make(map[string]string)
 
 	for _, tag := range strings.Split(tagString, ",") {
